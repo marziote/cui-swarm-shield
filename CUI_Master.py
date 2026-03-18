@@ -163,6 +163,7 @@ K_phys = CUI_Physics_Kernel()
 app = dash.Dash(__name__, title="CUI MASTER SHIELD - DIGITAL TWIN")
 server = app.server
 
+# STILE DEI TOOLTIP RIDOTTO AL MINIMO
 app.index_string = '''
 <!DOCTYPE html>
 <html>
@@ -175,11 +176,13 @@ app.index_string = '''
             .rc-slider-tooltip-inner {
                 background-color: #ffffff !important;
                 color: #2c3e50 !important;
-                font-size: 10px !important;
-                padding: 3px 6px !important;
+                font-size: 9px !important;
+                padding: 2px 4px !important;
+                min-width: auto !important;
+                min-height: auto !important;
                 border: 1px solid #bdc3c7 !important;
-                box-shadow: 0px 2px 4px rgba(0,0,0,0.1) !important;
-                border-radius: 4px !important;
+                box-shadow: 0px 1px 2px rgba(0,0,0,0.1) !important;
+                border-radius: 3px !important;
             }
             .rc-slider-tooltip-placement-bottom .rc-slider-tooltip-arrow {
                 border-bottom-color: #bdc3c7 !important;
@@ -197,9 +200,10 @@ app.index_string = '''
 </html>
 '''
 
-sld_style = {'width': '19%', 'fontSize': '13px'}
-row_style = {'display': 'flex', 'justifyContent': 'space-between', 'padding': '10px 15px', 'borderRadius': '8px', 'marginBottom': '10px', 'boxShadow': '0 2px 4px rgba(0,0,0,0.1)'}
-box_style = {'display': 'flex', 'flexDirection': 'column', 'alignItems': 'center', 'justifyContent': 'center', 'fontSize': '12px', 'textAlign': 'center', 'padding': '5px', 'border': '1px solid #ecf0f1', 'borderRadius': '5px', 'marginBottom': '2px', 'backgroundColor': '#f9f9f9'}
+# STILI MINIMALISTI
+sld_style = {'width': '19%', 'fontSize': '11px'}
+row_style = {'display': 'flex', 'justifyContent': 'space-between', 'padding': '4px 10px', 'borderRadius': '8px', 'marginBottom': '6px', 'boxShadow': '0 1px 2px rgba(0,0,0,0.1)'}
+box_style = {'display': 'flex', 'flexDirection': 'column', 'alignItems': 'center', 'justifyContent': 'center', 'fontSize': '11px', 'textAlign': 'center', 'padding': '5px', 'border': '1px solid #ecf0f1', 'borderRadius': '5px', 'marginBottom': '2px', 'backgroundColor': '#f9f9f9'}
 CAM_3D = dict(eye=dict(x=-1.5, y=-1.5, z=1.2))
 
 # ==============================================================================
@@ -211,54 +215,54 @@ app.layout = html.Div(style={'fontFamily': 'Segoe UI', 'backgroundColor': '#f4f6
         html.H3("🛡️ CUI SWARM SHIELD - UNIFIED DIGITAL TWIN", style={'textAlign': 'center', 'color': 'white', 'margin': '0'})
     ]),
 
-    # --- PLANCIA DI COMANDO ---
-    html.Div(style={'flex': '0 0 auto', 'padding': '10px'}, children=[
+    # --- PLANCIA DI COMANDO MINIMALISTA ---
+    html.Div(style={'flex': '0 0 auto', 'padding': '5px'}, children=[
         
         # Riga 1
         html.Div(style={**row_style, 'backgroundColor': '#e8f6f3', 'border': '1px solid #1abc9c'}, children=[
-            html.Div(style=sld_style, children=[html.Div(id='lbl-len', style={'fontWeight': 'bold', 'color': '#16a085', 'marginBottom':'4px'}), dcc.Slider(id='sld-len', min=np.log10(1), max=np.log10(200), step=0.01, value=np.log10(20), marks={np.log10(1):'1', np.log10(5):'5', np.log10(10):'10', np.log10(50):'50', np.log10(100):'100', np.log10(200):'200'}, tooltip={"placement": "bottom", "always_visible": True})]),
-            html.Div(style=sld_style, children=[html.Div(id='lbl-r', style={'fontWeight': 'bold', 'color': '#27ae60', 'marginBottom':'4px'}), dcc.Slider(id='sld-r', min=10, max=100, step=5, value=45, marks={10:'10', 40:'40', 70:'70', 100:'100'}, tooltip={"placement": "bottom", "always_visible": True})]),
-            html.Div(style=sld_style, children=[html.Div(id='lbl-off', style={'fontWeight': 'bold', 'color': '#8e44ad', 'marginBottom':'4px'}), dcc.Slider(id='sld-off', min=0, max=100, step=5, value=15, marks={0:'0', 25:'25', 50:'50', 75:'75', 100:'100'}, tooltip={"placement": "bottom", "always_visible": True})]),
-            html.Div(style=sld_style, children=[html.Div(id='lbl-k', style={'fontWeight': 'bold', 'color': '#16a085', 'marginBottom':'4px'}), dcc.Slider(id='sld-k', min=0.0, max=4.0, step=0.1, value=2.0, marks={0:'0', 1:'1', 2:'2', 3:'3', 4:'4'}, tooltip={"placement": "bottom", "always_visible": True})]),
-            html.Div(style=sld_style, children=[html.Div(id='lbl-z', style={'fontWeight': 'bold', 'color': '#e74c3c', 'marginBottom':'4px'}), dcc.Slider(id='sld-z', min=0, max=15, step=0.1, value=5, marks={0:'0', 5:'5', 10:'10', 15:'15'}, tooltip={"placement": "bottom", "always_visible": True})]),
+            html.Div(style=sld_style, children=[html.Div(id='lbl-len', style={'fontWeight': 'bold', 'color': '#16a085', 'marginBottom':'2px'}), dcc.Slider(id='sld-len', min=np.log10(1), max=np.log10(200), step=0.01, value=np.log10(20), marks={np.log10(1):'1', np.log10(5):'5', np.log10(10):'10', np.log10(50):'50', np.log10(100):'100', np.log10(200):'200'}, tooltip={"placement": "bottom", "always_visible": True})]),
+            html.Div(style=sld_style, children=[html.Div(id='lbl-r', style={'fontWeight': 'bold', 'color': '#27ae60', 'marginBottom':'2px'}), dcc.Slider(id='sld-r', min=10, max=100, step=5, value=45, marks={10:'10', 40:'40', 70:'70', 100:'100'}, tooltip={"placement": "bottom", "always_visible": True})]),
+            html.Div(style=sld_style, children=[html.Div(id='lbl-off', style={'fontWeight': 'bold', 'color': '#8e44ad', 'marginBottom':'2px'}), dcc.Slider(id='sld-off', min=0, max=100, step=5, value=15, marks={0:'0', 25:'25', 50:'50', 75:'75', 100:'100'}, tooltip={"placement": "bottom", "always_visible": True})]),
+            html.Div(style=sld_style, children=[html.Div(id='lbl-k', style={'fontWeight': 'bold', 'color': '#16a085', 'marginBottom':'2px'}), dcc.Slider(id='sld-k', min=0.0, max=4.0, step=0.1, value=2.0, marks={0:'0', 1:'1', 2:'2', 3:'3', 4:'4'}, tooltip={"placement": "bottom", "always_visible": True})]),
+            html.Div(style=sld_style, children=[html.Div(id='lbl-z', style={'fontWeight': 'bold', 'color': '#e74c3c', 'marginBottom':'2px'}), dcc.Slider(id='sld-z', min=0, max=15, step=0.1, value=5, marks={0:'0', 5:'5', 10:'10', 15:'15'}, tooltip={"placement": "bottom", "always_visible": True})]),
         ]),
         
         # Riga 2
         html.Div(style={**row_style, 'backgroundColor': '#ecf0f1', 'border': '1px solid #bdc3c7'}, children=[
-            html.Div(style=sld_style, children=[html.Div(id='lbl-n', style={'fontWeight': 'bold', 'color': '#2980b9', 'marginBottom':'4px'}), dcc.Slider(id='sld-n', min=5, max=150, step=1, value=40, marks={5:'5', 50:'50', 100:'100', 150:'150'}, tooltip={"placement": "bottom", "always_visible": True})]),
-            html.Div(style=sld_style, children=[html.Div(id='lbl-v', style={'fontWeight': 'bold', 'color': '#2980b9', 'marginBottom':'4px'}), dcc.Slider(id='sld-v', min=0.5, max=2.0, step=0.1, value=1.5, marks={0.5:'0.5', 1:'1', 1.5:'1.5', 2:'2.0'}, tooltip={"placement": "bottom", "always_visible": True})]),
-            html.Div(style=sld_style, children=[html.Div(id='lbl-v-sprint', style={'fontWeight': 'bold', 'color': '#c0392b', 'marginBottom':'4px'}), dcc.Slider(id='sld-v-sprint', min=5, max=30, step=1, value=15, marks={5:'5', 15:'15', 30:'30'}, tooltip={"placement": "bottom", "always_visible": True})]),
+            html.Div(style=sld_style, children=[html.Div(id='lbl-n', style={'fontWeight': 'bold', 'color': '#2980b9', 'marginBottom':'2px'}), dcc.Slider(id='sld-n', min=5, max=150, step=1, value=40, marks={5:'5', 50:'50', 100:'100', 150:'150'}, tooltip={"placement": "bottom", "always_visible": True})]),
+            html.Div(style=sld_style, children=[html.Div(id='lbl-v', style={'fontWeight': 'bold', 'color': '#2980b9', 'marginBottom':'2px'}), dcc.Slider(id='sld-v', min=0.5, max=2.0, step=0.1, value=1.5, marks={0.5:'0.5', 1:'1', 1.5:'1.5', 2:'2.0'}, tooltip={"placement": "bottom", "always_visible": True})]),
+            html.Div(style=sld_style, children=[html.Div(id='lbl-v-sprint', style={'fontWeight': 'bold', 'color': '#c0392b', 'marginBottom':'2px'}), dcc.Slider(id='sld-v-sprint', min=5, max=30, step=1, value=15, marks={5:'5', 15:'15', 30:'30'}, tooltip={"placement": "bottom", "always_visible": True})]),
             html.Div(style=sld_style, children=[
-                html.Div(style={'display':'flex', 'width': '100%', 'justifyContent': 'space-between', 'marginBottom':'4px'}, children=[
-                    html.Div(id='lbl-t-c2', style={'fontWeight': 'bold', 'color': '#d35400', 'fontSize': '11px'}),
-                    html.Div(id='lbl-t-eval', style={'fontWeight': 'bold', 'color': '#d35400', 'fontSize': '11px'})
+                html.Div(style={'display':'flex', 'width': '100%', 'justifyContent': 'space-between', 'marginBottom':'2px'}, children=[
+                    html.Div(id='lbl-t-c2', style={'fontWeight': 'bold', 'color': '#d35400', 'fontSize': '10px'}),
+                    html.Div(id='lbl-t-eval', style={'fontWeight': 'bold', 'color': '#d35400', 'fontSize': '10px'})
                 ]),
                 html.Div(style={'display':'flex', 'width': '100%'}, children=[
                     html.Div(style={'width': '50%', 'paddingRight': '2px'}, children=[dcc.Slider(id='sld-t-c2', min=0, max=5, step=0.5, value=1, marks={0:'0', 2.5:'2.5', 5:'5'}, tooltip={"placement": "bottom", "always_visible": True})]), 
                     html.Div(style={'width': '50%', 'paddingLeft': '2px'}, children=[dcc.Slider(id='sld-t-eval', min=0, max=10, step=0.5, value=2, marks={0:'0', 5:'5', 10:'10'}, tooltip={"placement": "bottom", "always_visible": True})])
                 ])
             ]),
-            html.Div(style=sld_style, children=[html.Div(id='lbl-t-target', style={'fontWeight': 'bold', 'color': '#2c3e50', 'marginBottom':'4px'}), dcc.Slider(id='sld-t-target', min=5, max=60, step=1, value=20, marks={5:'5', 30:'30', 60:'60'}, tooltip={"placement": "bottom", "always_visible": True})]),
+            html.Div(style=sld_style, children=[html.Div(id='lbl-t-target', style={'fontWeight': 'bold', 'color': '#2c3e50', 'marginBottom':'2px'}), dcc.Slider(id='sld-t-target', min=5, max=60, step=1, value=20, marks={5:'5', 30:'30', 60:'60'}, tooltip={"placement": "bottom", "always_visible": True})]),
         ]),
         
         # Riga 3
         html.Div(style={**row_style, 'backgroundColor': '#fff7e6', 'border': '1px solid #f39c12'}, children=[
-            html.Div(style=sld_style, children=[html.Div(id='lbl-days', style={'fontWeight': 'bold', 'color': '#8e44ad', 'marginBottom':'4px'}), dcc.Slider(id='sld-days', min=1, max=14, step=1, value=7, marks={1:'1', 7:'7', 14:'14'}, tooltip={"placement": "bottom", "always_visible": True})]),
-            html.Div(style=sld_style, children=[html.Div(id='lbl-t-charge', style={'fontWeight': 'bold', 'color': '#d35400', 'marginBottom':'4px'}), dcc.Slider(id='sld-t-charge', min=0.5, max=4.0, step=0.1, value=1.5, marks={0.5:'0.5', 2:'2', 4:'4'}, tooltip={"placement": "bottom", "always_visible": True})]),
-            html.Div(style=sld_style, children=[html.Div(id='lbl-cost-uuv', style={'fontWeight': 'bold', 'color': '#7f8c8d', 'marginBottom':'4px'}), dcc.Slider(id='sld-cost-uuv', min=5, max=40, step=1, value=15, marks={5:'5', 20:'20', 40:'40'}, tooltip={"placement": "bottom", "always_visible": True})]),
-            html.Div(style=sld_style, children=[html.Div(id='lbl-cost-batt', style={'fontWeight': 'bold', 'color': '#7f8c8d', 'marginBottom':'4px'}), dcc.Slider(id='sld-cost-batt', min=500, max=3000, step=100, value=2000, marks={500:'500', 1500:'1.5k', 3000:'3k'}, tooltip={"placement": "bottom", "always_visible": True})]),
+            html.Div(style=sld_style, children=[html.Div(id='lbl-days', style={'fontWeight': 'bold', 'color': '#8e44ad', 'marginBottom':'2px'}), dcc.Slider(id='sld-days', min=1, max=14, step=1, value=7, marks={1:'1', 7:'7', 14:'14'}, tooltip={"placement": "bottom", "always_visible": True})]),
+            html.Div(style=sld_style, children=[html.Div(id='lbl-t-charge', style={'fontWeight': 'bold', 'color': '#d35400', 'marginBottom':'2px'}), dcc.Slider(id='sld-t-charge', min=0.5, max=4.0, step=0.1, value=1.5, marks={0.5:'0.5', 2:'2', 4:'4'}, tooltip={"placement": "bottom", "always_visible": True})]),
+            html.Div(style=sld_style, children=[html.Div(id='lbl-cost-uuv', style={'fontWeight': 'bold', 'color': '#7f8c8d', 'marginBottom':'2px'}), dcc.Slider(id='sld-cost-uuv', min=5, max=40, step=1, value=15, marks={5:'5', 20:'20', 40:'40'}, tooltip={"placement": "bottom", "always_visible": True})]),
+            html.Div(style=sld_style, children=[html.Div(id='lbl-cost-batt', style={'fontWeight': 'bold', 'color': '#7f8c8d', 'marginBottom':'2px'}), dcc.Slider(id='sld-cost-batt', min=500, max=3000, step=100, value=2000, marks={500:'500', 1500:'1.5k', 3000:'3k'}, tooltip={"placement": "bottom", "always_visible": True})]),
             html.Div(style=sld_style, children=[html.Label(id='lbl-eff-range', style={'fontWeight': 'bold', 'color': '#16a085', 'marginTop':'12px'})]),
         ]),
     ]),
 
-    # --- GRIGLIA GRAFICI ---
-    html.Div(style={'flex': '1 1 auto', 'padding': '5px 15px', 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'space-between'}, children=[
-        html.Div(style={'display': 'flex', 'justifyContent': 'space-between', 'height': '46%'}, children=[
+    # --- GRIGLIA GRAFICI (Espansa) ---
+    html.Div(style={'flex': '1 1 auto', 'padding': '2px 10px', 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'space-between'}, children=[
+        html.Div(style={'display': 'flex', 'justifyContent': 'space-between', 'height': '49%'}, children=[
             html.Div(style={'width': '35%', 'backgroundColor': 'white', 'borderRadius': '8px', 'boxShadow': '0 1px 3px rgba(0,0,0,0.1)'}, children=[dcc.Graph(id='g-3d-trade', style={'height': '100%'})]),
             html.Div(style={'width': '32%', 'backgroundColor': 'white', 'borderRadius': '8px', 'boxShadow': '0 1px 3px rgba(0,0,0,0.1)'}, children=[dcc.Graph(id='g-3d-safe', style={'height': '100%'})]),
             html.Div(style={'width': '32%', 'backgroundColor': 'white', 'borderRadius': '8px', 'boxShadow': '0 1px 3px rgba(0,0,0,0.1)'}, children=[dcc.Graph(id='g-3d-warn', style={'height': '100%'})]),
         ]),
-        html.Div(style={'display': 'flex', 'justifyContent': 'space-between', 'height': '46%', 'marginTop': '5px'}, children=[
+        html.Div(style={'display': 'flex', 'justifyContent': 'space-between', 'height': '49%', 'marginTop': '5px'}, children=[
             html.Div(id='box-infra', style={'width': '12%', 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'space-evenly', 'backgroundColor': 'white', 'padding': '5px', 'borderRadius': '8px'}),
             html.Div(style={'width': '38%', 'backgroundColor': 'white', 'borderRadius': '8px', 'boxShadow': '0 1px 3px rgba(0,0,0,0.1)'}, children=[dcc.Graph(id='g-map', style={'height': '100%'})]),
             html.Div(style={'width': '18%', 'backgroundColor': 'white', 'borderRadius': '8px', 'boxShadow': '0 1px 3px rgba(0,0,0,0.1)'}, children=[dcc.Graph(id='g-range', style={'height': '100%'})]),
@@ -381,15 +385,11 @@ def update_master(l_km_exp, z_in, n_in, v_in, r_in, off_in, k_in, days, t_chg, c
     curr90 = K_phys.find_iso_distance(calc_n, l_km, r_in, off_in, 90.0, float(k_in))
     fig_90 = go.Figure(go.Surface(z=Z_90, x=X_off, y=Y_n_phys, colorscale='Reds', showscale=False))
     fig_90.add_trace(go.Scatter3d(x=[off_in], y=[calc_n], z=[max(0, curr90)], mode='markers', marker=dict(size=6, color='yellow')))
-    
-    # AGGIORNAMENTO ASSI ZONA SICURA
     fig_90.update_layout(title="<b>ZONA SICURA (>90%)</b>", scene=dict(camera=CAM_3D, xaxis_title="Offset", yaxis_title="Flotta (N)", zaxis_title="Distanza Laterale (m)"), margin=dict(l=0, r=0, t=30, b=0))
 
     curr10 = K_phys.find_iso_distance(calc_n, l_km, r_in, off_in, 10.0, float(k_in))
     fig_10 = go.Figure(go.Surface(z=Z_10, x=X_off, y=Y_n_phys, colorscale='Blues', showscale=False))
     fig_10.add_trace(go.Scatter3d(x=[off_in], y=[calc_n], z=[curr10], mode='markers', marker=dict(size=6, color='cyan')))
-    
-    # AGGIORNAMENTO ASSI ZONA WARNING
     fig_10.update_layout(title="<b>ZONA WARNING (>10%)</b>", scene=dict(camera=CAM_3D, xaxis_title="Offset", yaxis_title="Flotta (N)", zaxis_title="Distanza Laterale (m)"), margin=dict(l=0, r=0, t=30, b=0))
 
     # Grafici 2D
