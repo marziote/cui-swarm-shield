@@ -366,4 +366,60 @@ def update_master(l_km_exp, z_in, n_in, v_in, r_in, off_in, k_in, days, t_chg, c
             C_surf[i,j] = c_km_pt
     fig_trade = go.Figure(go.Surface(z=Z_plot, x=X_n, y=Y_v, surfacecolor=C_surf, colorscale='RdYlGn_r', showscale=False))
     pt_z_plot = 20.0 - min(calc_z, 20.0)
-    fig_trade.add_trace(go.Scatter3d(x=[calc_n], y=[v_in], z=[pt_z_plot], mode='markers', marker=dict(size
+    fig_trade.add_trace(go.Scatter3d(x=[calc_n], y=[v_in], z=[pt_z_plot], mode='markers', marker=dict(size=6, color='red', line=dict(color='black', width=1))))
+    
+    annotations = [dict(
+        x=calc_n, y=v_in, z=pt_z_plot,
+        text=(f"<b>Combinación Actual</b><br>Velocidad: {v_in} nudos<br>Flota: {int(calc_n)}<br>Tiempo Ciego: {calc_z:.2f} min<br>Costo/km: {sys_c_km:.0f} k€<br><span style='color:{status_color}'><b>{status_icon} {status_text}</b></span>"),
+        showarrow=True, arrowhead=1, arrowsize=1, arrowwidth=2, ax=-100, ay=-80, bgcolor="white", bordercolor="red", borderwidth=3, opacity=0.9, font=dict(color="black", size=11), align="left"
+    )]
+    fig_trade.update_layout(title="<b>TRADE-OFF CAPEX</b>", scene=dict(camera=CAM_3D, xaxis_title='Flota (N)', yaxis_title='Velocidad (nudos)', zaxis_title='Tiempo Ciego (min)', annotations=annotations), margin=dict(l=0, r=0, t=30, b=0))
+
+    Off_rng = np.linspace(0, 100, 20)
+    X_off, Y_n_phys = np.meshgrid(Off_rng, N_rng)
+    Z_90, Z_10 = np.zeros_like(X_off), np.zeros_like(X_off)
+    for i in range(len(N_rng)):
+        for j in range(len(Off_rng)):
+            Z_90[i,j] = max(0, K_phys.find_iso_distance(N_rng[i], l_km, r_in, Off_rng[j], 90.0, float(k_in)))
+            Z_10[i,j] = K_phys.find_iso_distance(N_rng[i], l_km, r_in, Off_rng[j], 10.0, float(k_in))
+
+    curr90 = K_phys.find_iso_distance(calc_n, l_km, r_in, off_in, 90.0, float(k_in))
+    fig_90 = go.Figure(go.Surface(z=Z_90, x=X_off, y=Y_n_phys, colorscale='Reds', showscale=False))
+    fig_90.add_trace(go.Scatter3d(x=[off_in], y=[calc_n], z=[max(0, curr90)], mode='markers', marker=dict(size=6, color='yellow')))
+    fig_90.update_layout(title="<b>ZONA SEGURA (>90%)</b>", scene=dict(camera=CAM_3D, xaxis_title="Offset", yaxis_title="Flota (N)", zaxis_title="Distancia de Detección (m)"), margin=dict(l=0, r=0, t=30, b=0))
+
+    curr10 = K_phys.find_iso_distance(calc_n, l_km, r_in, off_in, 10.0, float(k_in))
+    fig_10 = go.Figure(go.Surface(z=Z_10, x=X_off, y=Y_n_phys, colorscale='Blues', showscale=False))
+    fig_10.add_trace(go.Scatter3d(x=[off_in], y=[calc_n], z=[curr10], mode='markers', marker=dict(size=6, color='cyan')))
+    fig_10.update_layout(title="<b>ZONA DE ADVERTENCIA (>10%)</b>", scene=dict(camera=CAM_3D, xaxis_title="Offset", yaxis_title="Flota (N)", zaxis_title="Distancia de Detección (m)"), margin=dict(l=0, r=0, t=30, b=0))
+
+    # Grafici 2D
+    Y_max = r_in + off_in + 10
+    Y_arr = np.linspace(-Y_max, Y_max, 100)
+    P_arr = K_phys.calculate_probability_profile(np.abs(Y_arr), calc_n, l_km, r_in, off_in, float(k_in))
+    fig_map = go.Figure(data=go.Heatmap(z=np.column_stack((P_arr, P_arr)), x=[0, 100], y=Y_arr, colorscale=[[0, '#000'], [0.05, '#00F'], [0.1, '#0FF'], [0.4, '#0F0'], [0.8, '#FF0'], [1, '#F00']], zmin=0, zmax=100))
+    fig_map.add_shape(type="line", x0=0, x1=100, y0=0, y1=0, line=dict(color="lime", width=2))
+    fig_map.add_shape(type="line", x0=0, x1=100, y0=off_in, y1=off_in, line=dict(color="white", width=1, dash="dash"))
+    fig_map.add_shape(type="line", x0=0, x1=100, y0=-off_in, y1=-off_in, line=dict(color="white", width=1, dash="dash"))
+    fig_map.update_layout(title=f"<b>PROBABILIDAD (R_eff={r_eff:.1f}m)</b>", yaxis_title="Distancia de Detección (m)", margin=dict(l=45, r=10, t=30, b=10), plot_bgcolor='#111', xaxis=dict(showticklabels=False))
+
+    r_sweep = np.linspace(1, 100, 50)
+    z_sweep = [K_log.solve_blind_time(calc_n, v_in, r) for r in r_sweep]
+    fig_rng = go.Figure()
+    fig_rng.add_trace(go.Scatter(x=r_sweep, y=z_sweep, mode='lines', line=dict(color='#2980b9')))
+    fig_rng.add_trace(go.Scatter(x=[r_in], y=[calc_z], mode='markers', marker=dict(size=8, color='red')))
+    fig_rng.update_layout(title="<b>TIEMPO CIECO vs ALCANCE</b>", xaxis_title="Alcance del Sensor (m)", yaxis_title="Tiempo Ciego (min)", margin=dict(l=45, r=10, t=30, b=35), showlegend=False)
+    fig_rng.update_yaxes(autorange="reversed")
+
+    lbls = ['Flota', 'Bat', 'Cables', 'Infra']
+    vals = [c_brk['Flota']/1e6, c_brk['Baterías']/1e6, c_brk['Cables y Tendido']/1e6, c_brk['Infraestructura del Sistema']/1e6]
+    fig_cap = go.Figure(go.Bar(x=lbls, y=vals, marker_color=['#3498db', '#9b59b6', '#34495e', '#f1c40f'], text=[f"{v:.1f}" for v in vals], textposition='auto'))
+    fig_cap.update_layout(title="<b>CAPEX (M€)</b>", yaxis_title="Millones de €", margin=dict(l=40, r=10, t=30, b=20))
+
+    fig_bat = go.Figure(go.Bar(x=['Tot', 'Buf'], y=[n_batt_tot, n_batt_rack], marker_color=['#2ecc71', '#f39c12'], text=[n_batt_tot, n_batt_rack], textposition='auto'))
+    fig_bat.update_layout(title="<b>BATERÍAS</b>", yaxis_title="Unidades (N)", margin=dict(l=40, r=10, t=30, b=20))
+
+    return out_z, out_n, lbl_r_eff, l_len, l_r, l_off, l_k, l_z, l_n, l_v, l_vspr, l_tc2, l_teval, l_ttgt, l_days, l_tchg, l_cuuv, l_cbatt, fig_trade, fig_90, fig_10, fig_map, fig_rng, fig_cap, fig_bat, box_text
+
+if __name__ == '__main__':
+    app.run(debug=True, use_reloader=False)
