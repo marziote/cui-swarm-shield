@@ -158,12 +158,12 @@ class CUI_Physics_Kernel:
 K_phys = CUI_Physics_Kernel()
 
 # ==============================================================================
-# 2. INIZIALIZZAZIONE APP E STILI UNIFICATI (+ CSS)
+# 2. INIZIALIZZAZIONE APP E STILI UNIFICATI (+ CSS ESTREMO)
 # ==============================================================================
 app = dash.Dash(__name__, title="CUI MASTER SHIELD - DIGITAL TWIN")
 server = app.server
 
-# STILE DEI TOOLTIP RIDOTTO AL MINIMO
+# STILE DEI TOOLTIP SCHIACCIATO AL MINIMO POSSIBILE
 app.index_string = '''
 <!DOCTYPE html>
 <html>
@@ -176,10 +176,11 @@ app.index_string = '''
             .rc-slider-tooltip-inner {
                 background-color: #ffffff !important;
                 color: #2c3e50 !important;
-                font-size: 9px !important;
-                padding: 2px 4px !important;
-                min-width: auto !important;
-                min-height: auto !important;
+                font-size: 10px !important;
+                padding: 1px 4px !important;
+                min-width: 10px !important;
+                min-height: 10px !important;
+                line-height: 1.2 !important;
                 border: 1px solid #bdc3c7 !important;
                 box-shadow: 0px 1px 2px rgba(0,0,0,0.1) !important;
                 border-radius: 3px !important;
@@ -220,7 +221,7 @@ app.layout = html.Div(style={'fontFamily': 'Segoe UI', 'backgroundColor': '#f4f6
         
         # Riga 1
         html.Div(style={**row_style, 'backgroundColor': '#e8f6f3', 'border': '1px solid #1abc9c'}, children=[
-            html.Div(style=sld_style, children=[html.Div(id='lbl-len', style={'fontWeight': 'bold', 'color': '#16a085', 'marginBottom':'2px'}), dcc.Slider(id='sld-len', min=np.log10(1), max=np.log10(200), step=0.01, value=np.log10(20), marks={np.log10(1):'1', np.log10(5):'5', np.log10(10):'10', np.log10(50):'50', np.log10(100):'100', np.log10(200):'200'}, tooltip={"placement": "bottom", "always_visible": True})]),
+            html.Div(style=sld_style, children=[html.Div(id='lbl-len', style={'fontWeight': 'bold', 'color': '#16a085', 'marginBottom':'2px'}), dcc.Slider(id='sld-len', min=np.log10(1), max=np.log10(200), step=0.01, value=np.log10(20), marks={np.log10(1):'1', np.log10(5):'5', np.log10(10):'10', np.log10(50):'50', np.log10(100):'100', np.log10(200):'200'})]),
             html.Div(style=sld_style, children=[html.Div(id='lbl-r', style={'fontWeight': 'bold', 'color': '#27ae60', 'marginBottom':'2px'}), dcc.Slider(id='sld-r', min=10, max=100, step=5, value=45, marks={10:'10', 40:'40', 70:'70', 100:'100'}, tooltip={"placement": "bottom", "always_visible": True})]),
             html.Div(style=sld_style, children=[html.Div(id='lbl-off', style={'fontWeight': 'bold', 'color': '#8e44ad', 'marginBottom':'2px'}), dcc.Slider(id='sld-off', min=0, max=100, step=5, value=15, marks={0:'0', 25:'25', 50:'50', 75:'75', 100:'100'}, tooltip={"placement": "bottom", "always_visible": True})]),
             html.Div(style=sld_style, children=[html.Div(id='lbl-k', style={'fontWeight': 'bold', 'color': '#16a085', 'marginBottom':'2px'}), dcc.Slider(id='sld-k', min=0.0, max=4.0, step=0.1, value=2.0, marks={0:'0', 1:'1', 2:'2', 3:'3', 4:'4'}, tooltip={"placement": "bottom", "always_visible": True})]),
@@ -255,7 +256,7 @@ app.layout = html.Div(style={'fontFamily': 'Segoe UI', 'backgroundColor': '#f4f6
         ]),
     ]),
 
-    # --- GRIGLIA GRAFICI (Espansa) ---
+    # --- GRIGLIA GRAFICI ---
     html.Div(style={'flex': '1 1 auto', 'padding': '2px 10px', 'display': 'flex', 'flexDirection': 'column', 'justifyContent': 'space-between'}, children=[
         html.Div(style={'display': 'flex', 'justifyContent': 'space-between', 'height': '49%'}, children=[
             html.Div(style={'width': '35%', 'backgroundColor': 'white', 'borderRadius': '8px', 'boxShadow': '0 1px 3px rgba(0,0,0,0.1)'}, children=[dcc.Graph(id='g-3d-trade', style={'height': '100%'})]),
@@ -385,12 +386,12 @@ def update_master(l_km_exp, z_in, n_in, v_in, r_in, off_in, k_in, days, t_chg, c
     curr90 = K_phys.find_iso_distance(calc_n, l_km, r_in, off_in, 90.0, float(k_in))
     fig_90 = go.Figure(go.Surface(z=Z_90, x=X_off, y=Y_n_phys, colorscale='Reds', showscale=False))
     fig_90.add_trace(go.Scatter3d(x=[off_in], y=[calc_n], z=[max(0, curr90)], mode='markers', marker=dict(size=6, color='yellow')))
-    fig_90.update_layout(title="<b>ZONA SICURA (>90%)</b>", scene=dict(camera=CAM_3D, xaxis_title="Offset", yaxis_title="Flotta (N)", zaxis_title="Distanza Laterale (m)"), margin=dict(l=0, r=0, t=30, b=0))
+    fig_90.update_layout(title="<b>ZONA SICURA (>90%)</b>", scene=dict(camera=CAM_3D, xaxis_title="Offset", yaxis_title="Flotta (N)", zaxis_title="Distanza di Scoperta (m)"), margin=dict(l=0, r=0, t=30, b=0))
 
     curr10 = K_phys.find_iso_distance(calc_n, l_km, r_in, off_in, 10.0, float(k_in))
     fig_10 = go.Figure(go.Surface(z=Z_10, x=X_off, y=Y_n_phys, colorscale='Blues', showscale=False))
     fig_10.add_trace(go.Scatter3d(x=[off_in], y=[calc_n], z=[curr10], mode='markers', marker=dict(size=6, color='cyan')))
-    fig_10.update_layout(title="<b>ZONA WARNING (>10%)</b>", scene=dict(camera=CAM_3D, xaxis_title="Offset", yaxis_title="Flotta (N)", zaxis_title="Distanza Laterale (m)"), margin=dict(l=0, r=0, t=30, b=0))
+    fig_10.update_layout(title="<b>ZONA WARNING (>10%)</b>", scene=dict(camera=CAM_3D, xaxis_title="Offset", yaxis_title="Flotta (N)", zaxis_title="Distanza di Scoperta (m)"), margin=dict(l=0, r=0, t=30, b=0))
 
     # Grafici 2D
     Y_max = r_in + off_in + 10
@@ -400,7 +401,7 @@ def update_master(l_km_exp, z_in, n_in, v_in, r_in, off_in, k_in, days, t_chg, c
     fig_map.add_shape(type="line", x0=0, x1=100, y0=0, y1=0, line=dict(color="lime", width=2))
     fig_map.add_shape(type="line", x0=0, x1=100, y0=off_in, y1=off_in, line=dict(color="white", width=1, dash="dash"))
     fig_map.add_shape(type="line", x0=0, x1=100, y0=-off_in, y1=-off_in, line=dict(color="white", width=1, dash="dash"))
-    fig_map.update_layout(title=f"<b>PROBABILITÀ (R_eff={r_eff:.1f}m)</b>", yaxis_title="Distanza Laterale (m)", margin=dict(l=45, r=10, t=30, b=10), plot_bgcolor='#111', xaxis=dict(showticklabels=False))
+    fig_map.update_layout(title=f"<b>PROBABILITÀ (R_eff={r_eff:.1f}m)</b>", yaxis_title="Distanza di Scoperta (m)", margin=dict(l=45, r=10, t=30, b=10), plot_bgcolor='#111', xaxis=dict(showticklabels=False))
 
     r_sweep = np.linspace(1, 100, 50)
     z_sweep = [K_log.solve_blind_time(calc_n, v_in, r) for r in r_sweep]
