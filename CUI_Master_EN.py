@@ -86,8 +86,8 @@ class CUI_Kernel:
         CAPEX_Total = C_TOT_CABLE + C_TOT_FLEET + C_TOT_BATT + C_TOT_SYSTEM_INFRA
         CAPEX_per_km = CAPEX_Total / L_total_km
         
-        cost_breakdown = {'Flotte': C_TOT_FLEET, 'Batteries': C_TOT_BATT, 'Câbles & Pose': C_TOT_CABLE, 'Infrastructure Système': C_TOT_SYSTEM_INFRA}
-        return (CAPEX_per_km, int(N_tot_batt_per_mod), int(N_rack_per_mod), Power_Peak_SBS_kW, Data_req_SBS_Mbps, cost_breakdown, "ÉQUILIBRÉ", Power_Total_Sys_MW, Data_Total_Sys_Gbps, Cost_Cable_km_Dynamic)
+        cost_breakdown = {'Fleet': C_TOT_FLEET, 'Batteries': C_TOT_BATT, 'Cables & Laying': C_TOT_CABLE, 'System Infrastructure': C_TOT_SYSTEM_INFRA}
+        return (CAPEX_per_km, int(N_tot_batt_per_mod), int(N_rack_per_mod), Power_Peak_SBS_kW, Data_req_SBS_Mbps, cost_breakdown, "BALANCED", Power_Total_Sys_MW, Data_Total_Sys_Gbps, Cost_Cable_km_Dynamic)
 
     def calculate_intervention_complex(self, z_blind, r_sens, v_interceptor_kts, t_c2, r_action, t_eval):
         v_m_min = self.knots_to_m_min(v_interceptor_kts)
@@ -190,7 +190,7 @@ box_style = {'display': 'flex', 'flexDirection': 'column', 'alignItems': 'center
 CAM_3D = dict(eye=dict(x=-1.5, y=-1.5, z=1.2))
 
 # ==============================================================================
-# 3. LAYOUT SUPREMO (FRANCESE)
+# 3. LAYOUT SUPREMO (INGLESE)
 # ==============================================================================
 app.layout = html.Div(style={'fontFamily': 'Segoe UI', 'backgroundColor': '#f4f6f7', 'height': '100vh', 'overflow': 'hidden', 'display': 'flex', 'flexDirection': 'column'}, children=[
     html.Div(style={'backgroundColor': '#2c3e50', 'padding': '5px'}, children=[html.H3("🛡️ CUI SWARM SHIELD - UNIFIED DIGITAL TWIN", style={'textAlign': 'center', 'color': 'white', 'margin': '0'})]),
@@ -272,21 +272,21 @@ def update_master(l_km_exp, z_in, n_in, v_in, r_in, off_in, k_in, days, t_chg, c
         calc_z = K_log.solve_blind_time(n_in, v_in, r_in)
         out_z = calc_z
 
-    l_len = f"🌍 Longueur Câble: {l_km:.1f} km"
-    l_r = f"📡 Portée: {r_in} m"
-    l_off = f"↔️ Décalage: {off_in} m"
-    l_k = f"📡 Facteur K: {k_in:.1f}"
-    l_z = f"⏱️ Temps Aveugle: {calc_z:.1f} min"
-    l_n = f"🚁 Flotte (N): {int(calc_n)}"
-    l_v = f"⚡ V. Patrouille: {v_in:.1f} nds"
-    l_vspr = f"🚀 V. Interception: {v_spr} nds"
+    l_len = f"🌍 Cable Length: {l_km:.1f} km"
+    l_r = f"📡 Range: {r_in} m"
+    l_off = f"↔️ Offset: {off_in} m"
+    l_k = f"📡 K Factor: {k_in:.1f}"
+    l_z = f"⏱️ Blind Time: {calc_z:.1f} min"
+    l_n = f"🚁 Fleet (N): {int(calc_n)}"
+    l_v = f"⚡ Patrol Speed: {v_in:.1f} kts"
+    l_vspr = f"🚀 Intercept Speed: {v_spr} kts"
     l_tc2 = f"🧠 C2: {t_c2:.1f} min"
-    l_teval = f"👁️ Éval: {t_eval:.1f} min"
-    l_ttgt = f"🎯 T. Dégâts: {t_tgt} min"
-    l_days = f"🔋 Autonomie: {days} j"
-    l_tchg = f"⏳ T. Recharge: {t_chg:.1f} h"
-    l_cuuv = f"💶 Coût UUV: {c_uuv} k€"
-    l_cbatt = f"🔋 Coût Bat: {c_batt} €"
+    l_teval = f"👁️ Eval: {t_eval:.1f} min"
+    l_ttgt = f"🎯 Damage T.: {t_tgt} min"
+    l_days = f"🔋 Endurance: {days} days"
+    l_tchg = f"⏳ Charge Time: {t_chg:.1f} h"
+    l_cuuv = f"💶 UUV Cost: {c_uuv} k€"
+    l_cbatt = f"🔋 Batt Cost: {c_batt} €"
 
     (capex_km, n_batt_tot, n_batt_rack, p_sbs, d_sbs, c_brk, _, p_tot, d_tot, c_cbl) = K_log.calculate_system_complete(l_km, calc_n, days, c_uuv, c_batt, t_chg)
     tot_capex = sum(c_brk.values()) / 1e6
@@ -295,15 +295,15 @@ def update_master(l_km_exp, z_in, n_in, v_in, r_in, off_in, k_in, days, t_chg, c
     is_success = t_tot_int <= t_tgt
 
     box_text = [
-        html.Div(style=box_style, children=[html.Span("Réseau Terrestre"), html.B(f"{p_tot:.1f} MW", style={'color': '#c0392b'})]),
-        html.Div(style=box_style, children=[html.Span("Trafic Max"), html.B(f"{d_tot:.1f} Gbps", style={'color': '#8e44ad'})]),
-        html.Div(style=box_style, children=[html.Span("Coût Système"), html.B(f"{sys_c_km:.0f} k€/km", style={'color': '#16a085'})]),
-        html.Div(style=box_style, children=[html.Span("CAPEX Total"), html.B(f"{tot_capex:.1f} M€", style={'color': '#2c3e50', 'fontSize': '14px'})])
+        html.Div(style=box_style, children=[html.Span("Shore Power"), html.B(f"{p_tot:.1f} MW", style={'color': '#c0392b'})]),
+        html.Div(style=box_style, children=[html.Span("Max Traffic"), html.B(f"{d_tot:.1f} Gbps", style={'color': '#8e44ad'})]),
+        html.Div(style=box_style, children=[html.Span("System Cost"), html.B(f"{sys_c_km:.0f} k€/km", style={'color': '#16a085'})]),
+        html.Div(style=box_style, children=[html.Span("Total CAPEX"), html.B(f"{tot_capex:.1f} M€", style={'color': '#2c3e50', 'fontSize': '14px'})])
     ]
 
     r_eff = K_phys.get_R_eff(r_in, float(k_in))
-    lbl_r_eff = f"🎯 Portée Utile >10%: {r_eff:.1f} m"
-    status_icon, status_color, status_text = ("✅", "green", "SUCCÈS") if is_success else ("❌", "red", "ÉCHEC")
+    lbl_r_eff = f"🎯 Effective Range >10%: {r_eff:.1f} m"
+    status_icon, status_color, status_text = ("✅", "green", "SUCCESS") if is_success else ("❌", "red", "FAILURE")
 
     N_rng, V_rng = np.linspace(5, 100, 20), np.linspace(0.5, 2.0, 20)
     X_n, Y_v = np.meshgrid(N_rng, V_rng)
@@ -317,8 +317,8 @@ def update_master(l_km_exp, z_in, n_in, v_in, r_in, off_in, k_in, days, t_chg, c
     fig_trade = go.Figure(go.Surface(z=Z_plot, x=X_n, y=Y_v, surfacecolor=C_surf, colorscale='RdYlGn_r', showscale=False))
     pt_z_plot = 20.0 - min(calc_z, 20.0)
     fig_trade.add_trace(go.Scatter3d(x=[calc_n], y=[v_in], z=[pt_z_plot], mode='markers', marker=dict(size=6, color='red', line=dict(color='black', width=1))))
-    annotations = [dict(x=calc_n, y=v_in, z=pt_z_plot, text=(f"<b>Configuration Actuelle</b><br>Vitesse: {v_in} nds<br>Flotte: {int(calc_n)}<br>Temps Aveugle: {calc_z:.2f} min<br>Coût/km: {sys_c_km:.0f} k€<br><span style='color:{status_color}'><b>{status_icon} {status_text}</b></span>"), showarrow=True, arrowhead=1, arrowsize=1, arrowwidth=2, ax=-100, ay=-80, bgcolor="white", bordercolor="red", borderwidth=3, opacity=0.9, font=dict(color="black", size=11), align="left")]
-    fig_trade.update_layout(title="<b>COMPROMIS CAPEX</b>", scene=dict(camera=CAM_3D, xaxis_title='Flotte (N)', yaxis_title='Vitesse (nds)', zaxis_title='Temps Aveugle (min)', annotations=annotations), margin=dict(l=0, r=0, t=30, b=0))
+    annotations = [dict(x=calc_n, y=v_in, z=pt_z_plot, text=(f"<b>Current Setup</b><br>Speed: {v_in} kts<br>Fleet: {int(calc_n)}<br>Blind Time: {calc_z:.2f} min<br>Cost/km: {sys_c_km:.0f} k€<br><span style='color:{status_color}'><b>{status_icon} {status_text}</b></span>"), showarrow=True, arrowhead=1, arrowsize=1, arrowwidth=2, ax=-100, ay=-80, bgcolor="white", bordercolor="red", borderwidth=3, opacity=0.9, font=dict(color="black", size=11), align="left")]
+    fig_trade.update_layout(title="<b>CAPEX TRADE-OFF</b>", scene=dict(camera=CAM_3D, xaxis_title='Fleet (N)', yaxis_title='Speed (kts)', zaxis_title='Blind Time (min)', annotations=annotations), margin=dict(l=0, r=0, t=30, b=0))
 
     Off_rng = np.linspace(0, 100, 20)
     X_off, Y_n_phys = np.meshgrid(Off_rng, N_rng)
@@ -330,11 +330,11 @@ def update_master(l_km_exp, z_in, n_in, v_in, r_in, off_in, k_in, days, t_chg, c
 
     fig_90 = go.Figure(go.Surface(z=Z_90, x=X_off, y=Y_n_phys, colorscale='Reds', showscale=False))
     fig_90.add_trace(go.Scatter3d(x=[off_in], y=[calc_n], z=[max(0, K_phys.find_iso_distance(calc_n, l_km, r_in, off_in, 90.0, float(k_in)))], mode='markers', marker=dict(size=6, color='yellow')))
-    fig_90.update_layout(title="<b>ZONE SÉCURISÉE (>90%)</b>", scene=dict(camera=CAM_3D, xaxis_title="Décalage", yaxis_title="Flotte (N)", zaxis_title="Distance de Détection (m)"), margin=dict(l=0, r=0, t=30, b=0))
+    fig_90.update_layout(title="<b>SAFE ZONE (>90%)</b>", scene=dict(camera=CAM_3D, xaxis_title="Offset", yaxis_title="Fleet (N)", zaxis_title="Detection Distance (m)"), margin=dict(l=0, r=0, t=30, b=0))
 
     fig_10 = go.Figure(go.Surface(z=Z_10, x=X_off, y=Y_n_phys, colorscale='Blues', showscale=False))
     fig_10.add_trace(go.Scatter3d(x=[off_in], y=[calc_n], z=[K_phys.find_iso_distance(calc_n, l_km, r_in, off_in, 10.0, float(k_in))], mode='markers', marker=dict(size=6, color='cyan')))
-    fig_10.update_layout(title="<b>ZONE D'AVERTISSEMENT (>10%)</b>", scene=dict(camera=CAM_3D, xaxis_title="Décalage", yaxis_title="Flotte (N)", zaxis_title="Distance de Détection (m)"), margin=dict(l=0, r=0, t=30, b=0))
+    fig_10.update_layout(title="<b>WARNING ZONE (>10%)</b>", scene=dict(camera=CAM_3D, xaxis_title="Offset", yaxis_title="Fleet (N)", zaxis_title="Detection Distance (m)"), margin=dict(l=0, r=0, t=30, b=0))
 
     Y_arr = np.linspace(-(r_in + off_in + 10), r_in + off_in + 10, 100)
     P_arr = K_phys.calculate_probability_profile(np.abs(Y_arr), calc_n, l_km, r_in, off_in, float(k_in))
@@ -342,20 +342,20 @@ def update_master(l_km_exp, z_in, n_in, v_in, r_in, off_in, k_in, days, t_chg, c
     fig_map.add_shape(type="line", x0=0, x1=100, y0=0, y1=0, line=dict(color="lime", width=2))
     fig_map.add_shape(type="line", x0=0, x1=100, y0=off_in, y1=off_in, line=dict(color="white", width=1, dash="dash"))
     fig_map.add_shape(type="line", x0=0, x1=100, y0=-off_in, y1=-off_in, line=dict(color="white", width=1, dash="dash"))
-    fig_map.update_layout(title=f"<b>PROBABILITÉ (R_eff={r_eff:.1f}m)</b>", yaxis_title="Distance de Détection (m)", margin=dict(l=45, r=10, t=30, b=10), plot_bgcolor='#111', xaxis=dict(showticklabels=False))
+    fig_map.update_layout(title=f"<b>PROBABILITY (R_eff={r_eff:.1f}m)</b>", yaxis_title="Detection Distance (m)", margin=dict(l=45, r=10, t=30, b=10), plot_bgcolor='#111', xaxis=dict(showticklabels=False))
 
     r_sweep = np.linspace(1, 100, 50)
     fig_rng = go.Figure(go.Scatter(x=r_sweep, y=[K_log.solve_blind_time(calc_n, v_in, r) for r in r_sweep], mode='lines', line=dict(color='#2980b9')))
     fig_rng.add_trace(go.Scatter(x=[r_in], y=[calc_z], mode='markers', marker=dict(size=8, color='red')))
-    fig_rng.update_layout(title="<b>TEMPS AVEUGLE vs PORTÉE</b>", xaxis_title="Portée Capteur (m)", yaxis_title="Temps Aveugle (min)", margin=dict(l=45, r=10, t=30, b=35), showlegend=False)
+    fig_rng.update_layout(title="<b>BLIND TIME vs RANGE</b>", xaxis_title="Sensor Range (m)", yaxis_title="Blind Time (min)", margin=dict(l=45, r=10, t=30, b=35), showlegend=False)
     fig_rng.update_yaxes(autorange="reversed")
 
-    lbls, vals = ['Flotte', 'Bat', 'Câbles', 'Infra'], [c_brk['Flotte']/1e6, c_brk['Batteries']/1e6, c_brk['Câbles & Pose']/1e6, c_brk['Infrastructure Système']/1e6]
+    lbls, vals = ['Fleet', 'Batt', 'Cables', 'Infra'], [c_brk['Fleet']/1e6, c_brk['Batteries']/1e6, c_brk['Cables & Laying']/1e6, c_brk['System Infrastructure']/1e6]
     fig_cap = go.Figure(go.Bar(x=lbls, y=vals, marker_color=['#3498db', '#9b59b6', '#34495e', '#f1c40f'], text=[f"{v:.1f}" for v in vals], textposition='auto'))
-    fig_cap.update_layout(title="<b>CAPEX (M€)</b>", yaxis_title="Millions d'€", margin=dict(l=40, r=10, t=30, b=20))
+    fig_cap.update_layout(title="<b>CAPEX (M€)</b>", yaxis_title="Millions of €", margin=dict(l=40, r=10, t=30, b=20))
 
     fig_bat = go.Figure(go.Bar(x=['Tot', 'Buf'], y=[n_batt_tot, n_batt_rack], marker_color=['#2ecc71', '#f39c12'], text=[n_batt_tot, n_batt_rack], textposition='auto'))
-    fig_bat.update_layout(title="<b>BATTERIES</b>", yaxis_title="Unités (N)", margin=dict(l=40, r=10, t=30, b=20))
+    fig_bat.update_layout(title="<b>BATTERIES</b>", yaxis_title="Units (N)", margin=dict(l=40, r=10, t=30, b=20))
 
     return out_z, out_n, lbl_r_eff, l_len, l_r, l_off, l_k, l_z, l_n, l_v, l_vspr, l_tc2, l_teval, l_ttgt, l_days, l_tchg, l_cuuv, l_cbatt, fig_trade, fig_90, fig_10, fig_map, fig_rng, fig_cap, fig_bat, box_text
 
